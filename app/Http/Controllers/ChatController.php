@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\MessageSent;
 use App\Events\NotifikasiSent;
 use App\Events\MessageRead;
+use App\Models\Friend;
 use App\Models\Message;
 use App\Models\Notifikasi;
 use App\Models\User;
@@ -15,7 +16,12 @@ class ChatController extends Controller
     public function index()
     {
         // Mengambil semua user dari database, KECUALI user yang saat ini sedang login
-        $users = User::where('id', '!=', auth()->id())->get();
+        // $users = User::where('id', '!=', auth()->id())->get();
+        // ambil yang sudah berteman dengan kita
+        $friend = Friend::where('status', 'accepted')->where('user_id', auth()->id())->pluck('friend_id')
+            ->merge(Friend::where('friend_id', auth()->id())->where('status', 'accepted')->pluck('user_id'))
+            ->toArray();
+        $users = User::whereIn('id', $friend)->get();
         // Menghitung jumlah pesan yang belum dibaca untuk setiap user
         $unreadCount = Message::where('receiver_id', auth()->id())
             ->where('read', false)

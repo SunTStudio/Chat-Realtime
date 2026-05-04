@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chat</title>
+    <title>Tambah Teman</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link
@@ -120,11 +120,7 @@
             margin-top: 4px;
         }
 
-        .avatar-stack {
-            display: flex;
-        }
-
-        .logout-btn {
+        .btn-action {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: var(--muted);
@@ -137,12 +133,14 @@
             transition: all 0.2s;
             white-space: nowrap;
             flex-shrink: 0;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .logout-btn:hover {
-            border-color: rgba(239, 68, 68, 0.5);
-            color: #f87171;
-            background: rgba(239, 68, 68, 0.08);
+        .btn-action:hover {
+            border-color: var(--accent);
+            color: #fff;
+            background: var(--accent-glow);
         }
 
         .search-bar {
@@ -214,26 +212,6 @@
             animation: fadeIn 0.4s ease both;
         }
 
-        .user-item:nth-child(1) {
-            animation-delay: 0.05s;
-        }
-
-        .user-item:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .user-item:nth-child(3) {
-            animation-delay: 0.15s;
-        }
-
-        .user-item:nth-child(4) {
-            animation-delay: 0.2s;
-        }
-
-        .user-item:nth-child(5) {
-            animation-delay: 0.25s;
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -250,11 +228,6 @@
             background: var(--surface-2);
         }
 
-        .user-item:hover .user-arrow {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
         .user-avatar {
             width: 46px;
             height: 46px;
@@ -266,23 +239,6 @@
             font-weight: 700;
             font-size: 1.1rem;
             flex-shrink: 0;
-            position: relative;
-        }
-
-        .user-avatar-colors {
-            --c1: #7b6ef6;
-            --c2: #6358e8;
-        }
-
-        .user-status-dot {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--online);
-            border: 2px solid var(--surface);
         }
 
         .user-info {
@@ -305,33 +261,12 @@
             margin-top: 2px;
         }
 
-        .user-arrow {
-            color: var(--muted);
-            opacity: 0;
-            transform: translateX(-4px);
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-
         .panel-footer {
             padding: 16px 20px;
             border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .status-badge {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--online);
-            box-shadow: 0 0 8px var(--online);
-        }
-
-        .footer-text {
-            font-size: 0.78rem;
-            color: var(--muted);
         }
 
         /* Avatar color variants */
@@ -375,49 +310,11 @@
             color: #fff;
         }
 
-        /* Toast notification */
-        .toast-container {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast-item {
-            background: var(--surface-2);
-            border: 1px solid rgba(123, 110, 246, 0.3);
-            border-radius: 14px;
-            padding: 14px 18px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(123, 110, 246, 0.15);
-            max-width: 320px;
-            animation: toastIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px) scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-        }
-
-        .toast-title {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 3px;
-        }
-
-        .toast-body {
-            font-size: 0.83rem;
-            color: var(--text);
+        .empty-state {
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.88rem;
         }
     </style>
 </head>
@@ -427,124 +324,68 @@
         <div class="panel">
             <div class="panel-header">
                 <div class="header-left">
-                    <h1>Messages</h1>
-                    {{-- <p>{{ count($users) }} kontak tersedia</p> --}}
-                    <a href="{{ route('friends.index') }}" class="logout-btn me-2" style="text-decoration: none;">
-                        Tambah Teman
-                    </a>
-                    <a href="{{ route('friends.request') }}" class="logout-btn" style="text-decoration: none;">
-                        Permintaan Teman
-                    </a>
+                    <h1>Tambah Teman</h1>
+                    <p>Temukan kontak baru</p>
                 </div>
-                {{-- tombol tambah teman --}}
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="logout-btn">Keluar</button>
-                </form>
+                <a href="{{ route('chat.index') }}" class="btn-action">Kembali</a>
             </div>
 
             <div class="search-bar">
-                <input type="text" placeholder="Cari kontak...">
+                <input type="text" placeholder="Cari nama pengguna...">
             </div>
 
             <div class="user-list">
-                <div class="section-label">Semua Kontak</div>
-                @foreach ($users as $i => $user)
-                    <a href="{{ route('chat.show', $user) }}" class="user-item" id="user-item-{{ $user->id }}">
+                @if (session('success'))
+                    <div class="alert alert-success mx-3 my-2 px-3 py-2"
+                        style="font-size: 0.8rem; background: rgba(61, 214, 140, 0.1); border: 1px solid rgba(61, 214, 140, 0.3); color: var(--online); border-radius: 8px;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                <div class="section-label">Saran Teman</div>
+
+                @forelse ($users as $i => $user)
+                    <div class="user-item" style="animation-delay: {{ $i * 0.05 }}s">
                         <div class="user-avatar av-{{ $i % 8 }}">
                             {{ strtoupper(substr($user->name, 0, 1)) }}
-                            <span class="user-status-dot"></span>
                         </div>
                         <div class="user-info">
                             <div class="user-name">{{ $user->name }}</div>
-                            <div class="user-sub">Ketuk untuk mulai chat</div>
+                            <div class="user-sub">Belum berteman</div>
                         </div>
-                        {{-- menampilkan unread count --}}
-                        @if (isset($unreadCount[$user->id]))
-                            <span id="unread-count-{{ $user->id }}"
-                                class="unread-count btn btn-warning btn-sm"><strong>{{ $unreadCount[$user->id] }}</strong></span>
-                        @endif
-                        <span class="user-arrow">›</span>
-                    </a>
-                @endforeach
+                        <form method="POST" action="{{ route('friends.store') }}">
+                            @csrf
+                            <input type="hidden" name="friend_id" value="{{ $user->id }}">
+                            <button type="submit" class="btn-action">Tambah</button>
+                        </form>
+                    </div>
+                @empty
+                    <div class="empty-state">
+                        Tidak ada pengguna baru yang bisa ditambahkan saat ini.
+                    </div>
+                @endforelse
+                {{-- teman yg sudah anda tambahkan menunggu acc --}}
+                @if ($usersWaitingAccept->isNotEmpty())
+                    <div class="section-label">Menunggu Persetujuan Pertemanan</div>
+                    @foreach ($usersWaitingAccept as $waitingUser)
+                        <div class="user-item">
+                            <div class="user-avatar av-{{ $loop->index % 8 }}">
+                                {{ strtoupper(substr($waitingUser->name, 0, 1)) }}
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name">{{ $waitingUser->name }}</div>
+                                <div class="user-sub">Menunggu persetujuan</div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
 
             <div class="panel-footer">
-                <div class="status-badge"></div>
-                <span class="footer-text">Realtime · Terenkripsi End-to-End</span>
+                <span class="footer-text">Tambahkan teman untuk memulai percakapan</span>
             </div>
         </div>
     </div>
-
-    <!-- Toast container -->
-    <div class="toast-container" id="toast-container"></div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const myId = {{ auth()->id() }};
-            
-
-            function showToast(title, body) {
-                const container = document.getElementById('toast-container');
-                const el = document.createElement('div');
-                el.className = 'toast-item';
-                el.innerHTML = `<div class="toast-title">${title}</div><div class="toast-body">${body}</div>`;
-                container.appendChild(el);
-                setTimeout(() => el.remove(), 5000);
-            }
-
-            const initEcho = setInterval(() => {
-                if (window.Echo) {
-                    clearInterval(initEcho);
-
-                    @foreach ($users as $user)
-                        (function() {
-                            const otherId = {{ $user->id }};
-                            const ids = [myId, otherId].sort((a, b) => a - b);
-                            const channelName = `chat.${ids[0]}.${ids[1]}`;
-
-                            window.Echo.private(channelName)
-                                .listen('MessageSent', (e) => {
-                                    if (e.user_id === otherId) {
-                                        const unreadBadge = document.getElementById(
-                                            `unread-count-${otherId}`);
-                                        if (unreadBadge) {
-                                            const countEl = unreadBadge.querySelector('strong');
-                                            countEl.innerText = parseInt(countEl.innerText) + 1;
-                                        } else {
-                                            const userItem = document.getElementById(
-                                                `user-item-${otherId}`);
-                                            if (userItem) {
-                                                const badgeHtml =
-                                                    `<span id="unread-count-${otherId}" class="unread-count btn btn-warning btn-sm"><strong>1</strong></span>`;
-                                                userItem.querySelector('.user-arrow')
-                                                    .insertAdjacentHTML('beforebegin', badgeHtml);
-                                            }
-                                        }
-                                    }
-                                });
-                        })();
-                    @endforeach
-                }
-            }, 100);
-
-            // tampilkan notifikasi jika ada pesan baru
-            const initEcho2 = setInterval(() => {
-                if (window.Echo) {
-                    clearInterval(initEcho2);
-
-                    window.Echo.private(`notifikasi.${myId}`)
-                        .listen('NotifikasiSent', (e) => {
-                            showToast(`Notifikasi dari ${e.pengirim}`, e.notifikasi);
-                        });
-                }
-            }, 100);
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-    </script>
 </body>
 
 </html>
